@@ -1,6 +1,6 @@
 # AniPulse
 
-AniPulse is a private, local-first anime progress tracker. It records your current episode, watch status, completion statistics, and the next scheduled release without requiring an account.
+AniPulse is a private, local-first React anime progress tracker. It records your current episode, watch status, completion statistics, and the next scheduled release without requiring an account.
 
 ## Features
 
@@ -15,8 +15,9 @@ AniPulse is a private, local-first anime progress tracker. It records your curre
 
 ## Tech stack
 
+- React
 - Vite
-- Vanilla JavaScript
+- Component-based JavaScript (JSX)
 - CSS
 - LocalStorage
 - Service Worker / Web App Manifest
