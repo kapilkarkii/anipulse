@@ -1,18 +1,17 @@
+import { Icon } from "./Icon";
+
 export function Header({ notificationsEnabled, onEnableNotifications, onAddAnime }) {
   return (
     <header className="topbar">
-      <a className="brand" href="#" aria-label="AniPulse home">
-        <span className="brand-mark" aria-hidden="true">AP</span>
-        <span className="brand-copy"><strong>AniPulse</strong><small>Anime tracker</small></span>
-      </a>
+      <a className="header-breadcrumb" href="#"><span className="mobile-brand">anipulse</span><span className="desktop-label">Your space</span><span className="desktop-label">/</span><strong>Library</strong></a>
 
       <div className="top-actions">
         <button className="button button-ghost" type="button" onClick={onEnableNotifications}>
-          <span className="button-icon" aria-hidden="true">{notificationsEnabled ? "✓" : "○"}</span>{" "}
+          <Icon name={notificationsEnabled ? "check" : "bell"} size={17}/>
           {notificationsEnabled ? "Alerts enabled" : "Enable alerts"}
         </button>
         <button className="button button-primary" type="button" onClick={onAddAnime}>
-          <span aria-hidden="true">＋</span> Add anime
+          <Icon name="plus" size={17}/> Add anime
         </button>
       </div>
     </header>

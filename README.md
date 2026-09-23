@@ -4,6 +4,12 @@ AniPulse is a private, local-first React anime progress tracker. It records your
 
 ## Features
 
+- Warm editorial interface with a library sidebar and featured watchlist artwork
+- Mark the next episode watched directly from the featured panel
+- Switch between poster grid and compact list views
+- Sort by recently added, title, or watch progress
+- Responsive layouts, keyboard focus indicators, and reduced-motion support
+
 - Track watching, completed, planned, and paused anime
 - Increment or correct episode progress in one click
 - Countdown to the next manually entered release

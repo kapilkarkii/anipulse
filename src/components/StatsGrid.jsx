@@ -3,7 +3,7 @@ export function StatsGrid({ stats }) {
     { value: stats.watching, label: "Currently watching", detail: "Active series" },
     { value: stats.completed, label: "Completed", detail: "Finished series" },
     { value: stats.episodes.toLocaleString(), label: "Episodes watched", detail: "Across your library" },
-    { value: stats.nextDrop, label: "Next release", detail: "Nearest scheduled drop" }
+    { value: stats.total, label: "In your collection", detail: "Stories, all in one place" }
   ];
 
   return (

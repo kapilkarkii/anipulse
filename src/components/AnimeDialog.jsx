@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAnimeSearch } from "../hooks/useAnimeSearch";
+import { Icon } from "./Icon";
 
 const COLORS = ["#7c6cff", "#4f8cff", "#20b486", "#ef7b45", "#e05f8a"];
 
@@ -57,6 +58,7 @@ export function AnimeDialog({ existingTitles, onAdd, onClose }) {
   return (
     <dialog
       className="modal"
+      aria-labelledby="catalog-title"
       ref={dialogRef}
       onCancel={(event) => { event.preventDefault(); onClose(); }}
       onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
@@ -65,7 +67,7 @@ export function AnimeDialog({ existingTitles, onAdd, onClose }) {
         <div className="modal-heading">
           <div>
             <p className="eyebrow">ADD TO LIBRARY</p>
-            <h2>Find an anime</h2>
+            <h2 id="catalog-title">Find your next story.</h2>
           </div>
           <button className="icon-button" type="button" aria-label="Close" onClick={onClose}>×</button>
         </div>
@@ -73,11 +75,12 @@ export function AnimeDialog({ existingTitles, onAdd, onClose }) {
         {!selected ? (
           <div className="catalog-search">
             <label className="catalog-search-input">
-              <span aria-hidden="true">⌕</span>
+              <Icon name="search" size={19}/>
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search by anime title"
+                aria-label="Search anime catalog"
                 autoFocus
               />
             </label>
@@ -86,6 +89,7 @@ export function AnimeDialog({ existingTitles, onAdd, onClose }) {
               {loading && "Searching the anime catalog…"}
               {!loading && query.trim().length < 2 && "Enter at least two characters to search."}
               {!loading && searchError && searchError}
+              {!loading && !searchError && query.trim().length >= 2 && results.length === 0 && "No matches yet. Try another title."}
             </div>
 
             {results.length > 0 && (

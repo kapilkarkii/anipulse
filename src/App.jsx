@@ -7,6 +7,8 @@ import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { LibraryControls } from "./components/LibraryControls";
 import { StatsGrid } from "./components/StatsGrid";
+import { Sidebar } from "./components/Sidebar";
+import { Icon } from "./components/Icon";
 import { demoLibrary } from "./data/demoLibrary";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { getReleaseDetails } from "./utils/anime";
@@ -17,6 +19,8 @@ export default function App() {
   const [library, setLibrary] = useLocalStorage(STORAGE_KEY, demoLibrary);
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("added");
+  const [view, setView] = useState("grid");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toast, setToast] = useState("");
   const [now, setNow] = useState(Date.now());
@@ -78,6 +82,7 @@ export default function App() {
 
     return {
       watching: counts.watching,
+      total: library.length,
       completed: counts.completed,
       episodes,
       nextDrop: nextRelease?.short || "—"
@@ -86,11 +91,20 @@ export default function App() {
 
   const visibleAnime = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
-    return library.filter((anime) => {
+    const matches = library.filter((anime) => {
       const matchesFilter = activeFilter === "all" || anime.status === activeFilter;
       return matchesFilter && anime.title.toLowerCase().includes(query);
     });
-  }, [activeFilter, library, searchTerm]);
+    if (sortOrder === "title") matches.sort((a, b) => a.title.localeCompare(b.title));
+    if (sortOrder === "progress") matches.sort((a, b) => b.currentEpisode / b.totalEpisodes - a.currentEpisode / a.totalEpisodes);
+    return matches;
+  }, [activeFilter, library, searchTerm, sortOrder]);
+
+  const featuredAnime = library.find((anime) => anime.status === "watching" && anime.currentEpisode < anime.totalEpisodes);
+  const chooseFilter = (filter) => {
+    setActiveFilter(filter);
+    document.getElementById("collection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const existingTitles = useMemo(
     () => new Set(library.map((anime) => anime.title.toLowerCase())),
@@ -128,6 +142,7 @@ export default function App() {
   const addAnime = (anime) => {
     setLibrary((current) => [anime, ...current]);
     setActiveFilter("all");
+    setSearchTerm("");
     setDialogOpen(false);
     setToast(`${anime.title} added to your library`);
   };
@@ -160,7 +175,9 @@ export default function App() {
   };
 
   return (
-    <>
+    <div className="app-layout">
+      <Sidebar counts={counts} activeFilter={activeFilter} onFilterChange={chooseFilter} onAddAnime={() => setDialogOpen(true)}/>
+      <div className="workspace">
       <Header
         notificationsEnabled={notificationsEnabled}
         onEnableNotifications={enableNotifications}
@@ -168,20 +185,25 @@ export default function App() {
       />
 
       <main className="shell">
-        <Hero />
+        <div className="page-heading"><div><p className="eyebrow">FOR THE LOVE OF ANIME</p><h1>Your stories, <em>in one place.</em></h1><p>A home for everything you're watching, and everything you'll watch next.</p></div><span className="heading-stamp"><Icon name="bookmark" size={16}/> THE PERSONAL COLLECTION</span></div>
+        <Hero anime={featuredAnime} onChangeEpisode={updateEpisode} onAddAnime={() => setDialogOpen(true)}/>
         <StatsGrid stats={stats} />
 
-        <section className="library-section">
+        <section className="library-section" id="collection">
           <LibraryControls
             activeFilter={activeFilter}
             counts={counts}
             searchTerm={searchTerm}
             onFilterChange={setActiveFilter}
             onSearchChange={setSearchTerm}
+            sortOrder={sortOrder}
+            onSortChange={setSortOrder}
+            view={view}
+            onViewChange={setView}
           />
 
           {visibleAnime.length > 0 ? (
-            <div className="anime-grid">
+            <div className={`anime-grid ${view === "list" ? "list-view" : ""}`}>
               {visibleAnime.map((anime) => (
                 <AnimeCard
                   anime={anime}
@@ -191,6 +213,7 @@ export default function App() {
                   key={anime.id}
                 />
               ))}
+              <button className="add-card" onClick={() => setDialogOpen(true)}><span className="add-card-symbol"><Icon name="plus" size={28}/></span><strong>Make room for a new story</strong><span>Find an anime to add to your collection</span><span className="add-card-link">Explore the catalog <Icon name="arrow" size={17}/></span></button>
             </div>
           ) : (
             <EmptyState onAddAnime={() => setDialogOpen(true)} />
@@ -202,6 +225,7 @@ export default function App() {
           <span>Catalog data via <a href="https://kitsu.io" target="_blank" rel="noreferrer">Kitsu</a> and <a href="https://jikan.moe" target="_blank" rel="noreferrer">Jikan</a>.</span>
         </footer>
       </main>
+      </div>
 
       {dialogOpen && (
         <AnimeDialog
@@ -212,6 +236,6 @@ export default function App() {
       )}
 
       <div className={`toast ${toast ? "show" : ""}`} role="status" aria-live="polite">{toast}</div>
-    </>
+    </div>
   );
 }
