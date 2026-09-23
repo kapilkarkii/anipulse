@@ -1,0 +1,9 @@
+{
+  "name": "AniPulse — Anime Progress Tracker",
+  "short_name": "AniPulse",
+  "description": "Track anime progress and upcoming episode releases.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d0b15",
+  "theme_color": "#0d0b15"
+}

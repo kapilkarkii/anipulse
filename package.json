@@ -1,0 +1,18 @@
+{
+  "name": "anipulse",
+  "version": "1.0.0",
+  "description": "A private, local-first anime progress and release tracker built with Vite.",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "vite": "^8.3.0"
+  }
+}
