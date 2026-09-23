@@ -25,6 +25,9 @@ export function AnimeCard({ anime, now, onChangeEpisode, onRemove }) {
 
       <div className="card-content">
         <h3 title={anime.title}>{anime.title}</h3>
+        <p className="anime-meta">
+          {[anime.format, anime.year, anime.score ? `★ ${anime.score}` : null].filter(Boolean).join(" · ") || "Anime"}
+        </p>
         <div className="episode-line">
           <span>Episode {anime.currentEpisode} of {anime.totalEpisodes}</span>
           <span className="episode-percent">{progress}%</span>

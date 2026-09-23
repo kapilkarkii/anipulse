@@ -8,6 +8,7 @@ AniPulse is a private, local-first React anime progress tracker. It records your
 - Increment or correct episode progress in one click
 - Countdown to the next manually entered release
 - Search and filter a personal library
+- Search a live anime catalog with real poster artwork
 - Browser alerts for releases within 24 hours when the app is open
 - Offline support through a service worker
 - Responsive interface for desktop and mobile
@@ -21,6 +22,7 @@ AniPulse is a private, local-first React anime progress tracker. It records your
 - CSS
 - LocalStorage
 - Service Worker / Web App Manifest
+- Kitsu catalog with Jikan fallback
 
 ## Run locally
 

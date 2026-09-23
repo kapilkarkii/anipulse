@@ -11,8 +11,8 @@ export function LibraryControls({ activeFilter, counts, searchTerm, onFilterChan
     <>
       <div className="section-heading">
         <div>
-          <p className="eyebrow">LIBRARY</p>
-          <h2>Your anime</h2>
+          <p className="eyebrow">COLLECTION</p>
+          <h2>My library</h2>
         </div>
         <label className="search-box">
           <span aria-hidden="true">⌕</span>

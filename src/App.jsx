@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { searchAnime } from "./api/jikan";
 import { AnimeCard } from "./components/AnimeCard";
 import { AnimeDialog } from "./components/AnimeDialog";
 import { EmptyState } from "./components/EmptyState";
@@ -22,11 +23,37 @@ export default function App() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(
     () => "Notification" in window && Notification.permission === "granted"
   );
+  const imageMigrationStarted = useRef(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 60_000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (imageMigrationStarted.current) return;
+    const missingImages = library.filter((anime) => !anime.image).slice(0, 12);
+    if (missingImages.length === 0) return;
+    imageMigrationStarted.current = true;
+
+    const hydrateImages = async () => {
+      for (const anime of missingImages) {
+        try {
+          const [match] = await searchAnime(anime.title);
+          if (match) {
+            setLibrary((current) => current.map((item) => (
+              item.id === anime.id ? { ...item, ...match, title: item.title } : item
+            )));
+          }
+        } catch {
+          // Keep the local fallback if the public catalog is temporarily unavailable.
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 450));
+      }
+    };
+
+    hydrateImages();
+  }, [library, setLibrary]);
 
   useEffect(() => {
     if (!toast) return undefined;
@@ -134,9 +161,6 @@ export default function App() {
 
   return (
     <>
-      <div className="ambient ambient-one" />
-      <div className="ambient ambient-two" />
-
       <Header
         notificationsEnabled={notificationsEnabled}
         onEnableNotifications={enableNotifications}
@@ -172,6 +196,11 @@ export default function App() {
             <EmptyState onAddAnime={() => setDialogOpen(true)} />
           )}
         </section>
+
+        <footer className="site-footer">
+          <span>© 2026 AniPulse</span>
+          <span>Catalog data via <a href="https://kitsu.io" target="_blank" rel="noreferrer">Kitsu</a> and <a href="https://jikan.moe" target="_blank" rel="noreferrer">Jikan</a>.</span>
+        </footer>
       </main>
 
       {dialogOpen && (
